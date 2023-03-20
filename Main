@@ -1,0 +1,51 @@
+local DoNotDeleteFolder = Instance.new("Folder", workspace)
+DoNotDeleteFolder.Name = "no delete"
+function Effect(Pos)
+	local Part = Instance.new("Part", DoNotDeleteFolder)
+	Part.Position = Pos
+	Part.Transparency = 1
+	Part.Size = Vector3.new(1,1,1)
+	local Particle = Instance.new("ParticleEmitter", Part)
+	Particle.Texture = "rbxassetid://114885896"
+	Particle.Size = NumberSequence.new(5)
+	Particle.Rate = 100
+	Particle.Lifetime = NumberRange.new(1,10)
+	Particle.SpreadAngle = Vector2.new(-360,360)
+	local SoundPart = Instance.new("Part", DoNotDeleteFolder)
+	SoundPart.Position = Pos
+	SoundPart.Transparency = 1
+	SoundPart.Size = Vector3.new(1,1,1)
+	local Sound = Instance.new("Sound", Part)
+	Sound.SoundId = "rbxassetid://634504313"
+	Sound.PlaybackSpeed = 0.7
+	Sound:Play()
+	wait(0.5)
+	Part:Remove()
+end
+
+function EatWorld(Module)
+	pcall(function()
+		local C = Module:GetChildren()
+		for _, item in pairs(C) do
+			wait(1)
+			if not item:IsA("Terrain") and not item:IsA("Camera") and item.Name ~= game.Players.LocalPlayer.Name and item.Name ~= "no delete" then
+				local ItemC = item:GetChildren()
+				local Number = 0
+				for i=1,#ItemC do Number=Number+1 end
+				if Number ~= 0 then
+					EatWorld(item)
+				else
+					if item:IsA("Part") or item:IsA("BasePart") or item:IsA("WedgePart") or item:IsA("CornerWedgePart") or item:IsA("MeshPart") or item:IsA("TrussPart") then
+						Effect(item.Position)
+					end
+					item:Remove()
+				end
+			end
+		end
+		if not Module:IsA("Terrain") and not Module:IsA("Workspace") and not Module:IsA("Camera") and Module.Name ~= game.Players.LocalPlayer.Name and Module.Name ~= "no delete" then
+			Module:Remove()
+		end
+	end)
+end
+
+EatWorld(workspace)
